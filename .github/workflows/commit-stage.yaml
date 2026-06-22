@@ -24,12 +24,18 @@ jobs:
           path: "${{ github.workspace }}"
           fail-build: false
           severity-cutoff: high
+      - name: Debug scan outputs
+        if: always()
+        run: |
+          echo "SARIF PATH: ${{ steps.scan.outputs.sarif }}"
+          find . -name "*.sarif" -type f
       - name: Inspect SARIF
         if: always()
         run: |
-          ls -lh ./results.sarif
-          wc -c ./results.sarif
-          cat ./results.sarif
+          echo "SARIF PATH: ${{ steps.scan.outputs.sarif }}"
+          ls -lh "${{ steps.scan.outputs.sarif }}"
+          wc -c "${{ steps.scan.outputs.sarif }}"
+          head -50 "${{ steps.scan.outputs.sarif }}"
       - name: Validate SARIF
         if: always()
         run: |

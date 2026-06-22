@@ -24,9 +24,19 @@ jobs:
           path: "${{ github.workspace }}"
           fail-build: false
           severity-cutoff: high
+      - name: Inspect SARIF
+        if: always()
+        run: |
+          ls -lh ./results.sarif
+          wc -c ./results.sarif
+          cat ./results.sarif
+      - name: Validate SARIF
+        if: always()
+        run: |
+          jq . "${{ steps.scan.outputs.sarif }}" > /dev/null
       - name: Upload Vulnerability Report
-        uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+        if: always()
+        uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: Build, unit tests and integration tests

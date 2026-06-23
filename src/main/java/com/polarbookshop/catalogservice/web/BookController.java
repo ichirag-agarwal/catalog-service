@@ -1,6 +1,7 @@
 package com.polarbookshop.catalogservice.web;
 
 import com.polarbookshop.catalogservice.domain.Book;
+import com.polarbookshop.catalogservice.domain.BookRequest;
 import com.polarbookshop.catalogservice.domain.BookService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,8 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Book addBookToCatalog(@Valid @RequestBody Book book) {
-        return bookService.addBookToCatalog(book);
+    public Book addBookToCatalog(@Valid @RequestBody BookRequest request) {
+        return bookService.addBookToCatalog(request);
     }
 
     @DeleteMapping("/{isbn}")
@@ -39,7 +40,7 @@ public class BookController {
     }
 
     @PutMapping("/{isbn}")
-    public Book updateBookDetails(@PathVariable String isbn, @Valid @RequestBody Book book) {
-        return bookService.editBookDetails(isbn, book);
+    public Book updateBookDetails(@PathVariable String isbn, @Valid @RequestBody BookRequest request) {
+        return bookService.editBookDetails(isbn, request);
     }
 }

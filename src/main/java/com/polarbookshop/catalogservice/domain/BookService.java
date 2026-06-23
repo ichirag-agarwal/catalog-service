@@ -20,10 +20,12 @@ public class BookService {
                 .orElseThrow(() -> new BookNotFoundException(isbn));
     }
 
-    public Book addBookToCatalog(Book book) {
-        if (bookRepository.existsByIsbn(book.isbn())) {
-            throw new BookAlreadyExistsException(book.isbn());
+    public Book addBookToCatalog(BookRequest request) {
+        if (bookRepository.existsByIsbn(request.isbn())) {
+            throw new BookAlreadyExistsException(request.isbn());
         }
+
+        var book = Book.of(request.isbn(), request.title(), request.author(), request.price(), request.publisher());
         return bookRepository.save(book);
     }
 
@@ -31,16 +33,22 @@ public class BookService {
         bookRepository.deleteByIsbn(isbn);
     }
 
-    public Book editBookDetails(String isbn, Book book) {
+    public Book editBookDetails(String isbn, BookRequest request) {
         return bookRepository.findByIsbn(isbn)
                 .map(existingBook -> {
                     var bookToUpdate = new Book(
+                            existingBook.id(),
                             existingBook.isbn(),
-                            book.title(),
-                            book.author(),
-                            book.price());
+                            request.title(),
+                            request.author(),
+                            request.price(),
+                            request.publisher(),
+                            existingBook.createdDate(),
+                            existingBook.lastModifiedDate(),
+                            existingBook.version()
+                    );
                     return bookRepository.save(bookToUpdate);
                 })
-                .orElseGet(() -> addBookToCatalog(book));
+                .orElseGet(() -> addBookToCatalog(request));
     }
 }

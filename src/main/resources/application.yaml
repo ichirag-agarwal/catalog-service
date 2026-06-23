@@ -21,9 +21,12 @@ spring:
     hikari:
       maximum-pool-size: 5
       connection-timeout: 2000
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
 
 server:
   port: 9001
+  shutdown: graceful
   tomcat:
     connection-timeout: 2s
     keepalive-timeout: 15s
